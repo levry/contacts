@@ -1,13 +1,14 @@
 package ru.levry.contacts.data;
 
+import org.springframework.util.StringUtils;
+
 /**
  * @author levry
  */
-public class ContactSearch {
+public class ContactsSearch {
 
     private String lastName;
     private String firstName;
-    private String middleName;
 
     public String getLastName() {
         return lastName;
@@ -25,11 +26,7 @@ public class ContactSearch {
         this.firstName = firstName;
     }
 
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
+    public boolean isEmpty() {
+        return StringUtils.isEmpty(lastName) && StringUtils.isEmpty(firstName);
     }
 }

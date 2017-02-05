@@ -1,13 +1,20 @@
 package ru.levry.contacts.store;
 
+import org.springframework.util.StringUtils;
 import ru.levry.contacts.data.Contact;
-import ru.levry.contacts.data.ContactSearch;
+import ru.levry.contacts.data.ContactsSearch;
 import ru.levry.contacts.data.ContactsStore;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.Objects.nonNull;
 
 /**
  * @author levry
@@ -48,7 +55,26 @@ public class ListContactsStore implements ContactsStore {
     }
 
     @Override
-    public Collection<Contact> findBy(ContactSearch search) {
-        return contacts.values();
+    public Collection<Contact> findBy(ContactsSearch search) {
+        Collection<Contact> values = this.contacts.values();
+        if(search.isEmpty()) {
+            return values;
+        }
+
+        Stream<Contact> stream = values.stream();
+        if (!StringUtils.isEmpty(search.getFirstName())) {
+            stream = stream.filter(startsWith(Contact::getFirstName, search.getFirstName()));
+        }
+        if (!StringUtils.isEmpty(search.getLastName())) {
+            stream = stream.filter(startsWith(Contact::getLastName, search.getLastName()));
+        }
+        return stream.collect(Collectors.toList());
+    }
+
+    private Predicate<Contact> startsWith(Function<Contact, String> func, String prefix) {
+        return c -> {
+            String value = func.apply(c);
+            return nonNull(value) && value.toLowerCase().startsWith(prefix);
+        };
     }
 }

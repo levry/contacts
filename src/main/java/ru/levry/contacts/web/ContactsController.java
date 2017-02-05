@@ -2,7 +2,7 @@ package ru.levry.contacts.web;
 
 import org.springframework.web.bind.annotation.*;
 import ru.levry.contacts.data.Contact;
-import ru.levry.contacts.data.ContactSearch;
+import ru.levry.contacts.data.ContactsSearch;
 import ru.levry.contacts.data.ContactsStore;
 
 import java.util.Collection;
@@ -10,6 +10,7 @@ import java.util.Collection;
 /**
  * @author levry
  */
+// TODO методы для работы с телефонами отдельного контакта
 @RestController
 @RequestMapping("/contacts")
 public class ContactsController {
@@ -38,7 +39,7 @@ public class ContactsController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public Collection<Contact> search(@ModelAttribute ContactSearch search) {
+    public Collection<Contact> search(@ModelAttribute ContactsSearch search) {
         return contactsStore.findBy(search);
     }
 

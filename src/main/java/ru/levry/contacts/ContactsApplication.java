@@ -6,6 +6,10 @@ import org.springframework.context.annotation.Bean;
 import ru.levry.contacts.data.ContactsStore;
 import ru.levry.contacts.store.ListContactsStore;
 
+/**
+ * @author levry
+ */
+// TODO конфигурирование источника контактов db, json, xml
 @SpringBootApplication
 public class ContactsApplication {
 

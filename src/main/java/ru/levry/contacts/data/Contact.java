@@ -1,5 +1,7 @@
 package ru.levry.contacts.data;
 
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -60,5 +62,29 @@ public class Contact {
 
     public void setPhones(Set<String> phones) {
         this.phones = phones;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Contact contact = (Contact) o;
+        return Objects.equals(id, contact.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    public void addPhone(String phone) {
+        if(phones == null) {
+            phones = new HashSet<>();
+        }
+        phones.add(phone);
     }
 }

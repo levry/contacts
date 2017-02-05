@@ -5,6 +5,7 @@ import java.util.Collection;
 /**
  * @author levry
  */
+// TODO реализации для json, xml
 public interface ContactsStore {
 
     void add(Contact contact);
@@ -15,6 +16,6 @@ public interface ContactsStore {
 
     void remove(long id);
 
-    Collection<Contact> findBy(ContactSearch search);
+    Collection<Contact> findBy(ContactsSearch search);
 
 }
