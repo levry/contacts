@@ -5,7 +5,6 @@ import java.util.Collection;
 /**
  * @author levry
  */
-// TODO реализации для json, xml
 public interface ContactsStore {
 
     void add(Contact contact);

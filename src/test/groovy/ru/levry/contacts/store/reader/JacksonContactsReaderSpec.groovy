@@ -129,9 +129,7 @@ class JacksonContactsReaderSpec extends Specification {
         reader.write(contacts)
 
         then:
-        // TODO rename xml elements
-        file.text == '<ArrayList><item><id>2</id><lastName>Lee</lastName><firstName>Jet</firstName><middleName>J</middleName><comment>comment</comment><phones><phones>000111</phones></phones></item></ArrayList>'
-//        file.text == '<contacts><item><id>2</id><lastName>Lee</lastName><firstName>Jet</firstName><middleName>J</middleName><comment>comment</comment><phones><phones>000111</phones></phones></item></contacts>'
+        file.text == '<contacts><contact><id>2</id><lastName>Lee</lastName><firstName>Jet</firstName><middleName>J</middleName><comment>comment</comment><phones><phones>000111</phones></phones></contact></contacts>'
 
         cleanup:
         file.delete()
