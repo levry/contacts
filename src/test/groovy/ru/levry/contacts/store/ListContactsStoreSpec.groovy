@@ -39,6 +39,7 @@ class ListContactsStoreSpec extends Specification {
         contactsStore.add(contact)
 
         then:
+        contact.id != null
         contact.lastName == 'lastName'
         contact.firstName == 'firstName'
         contact.middleName == 'middleName'
@@ -144,5 +145,20 @@ class ListContactsStoreSpec extends Specification {
         then:
         contacts
         contacts*.id == [2L]
+    }
+
+    def "convert from list"() {
+        given:
+        def list = [
+                new Contact(id: 3),
+                new Contact(id: 14)
+        ]
+
+        when:
+        def contacts = ListContactsStore.contactsList(list)
+
+        then:
+        contacts.size() == 2
+        contacts.currentCounter() == 14
     }
 }

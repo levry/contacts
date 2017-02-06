@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<contacts>
+    <contact>
+        <id>1</id>
+        <lastName>Norris</lastName>
+        <firstName>Chuck</firstName>
+        <comment>this is chuck</comment>
+        <phones>
+            <phones>12345678</phones>
+            <phones>87654321</phones>
+            <phones>telephone</phones>
+        </phones>
+    </contact>
+    <contact>
+        <id>3</id>
+        <lastName>Schwarzenegger</lastName>
+        <firstName>Arnold</firstName>
+        <middleName>S</middleName>
+        <comment>terminator</comment>
+    </contact>
+</contacts>

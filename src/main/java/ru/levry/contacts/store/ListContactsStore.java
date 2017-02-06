@@ -5,9 +5,7 @@ import ru.levry.contacts.data.Contact;
 import ru.levry.contacts.data.ContactsSearch;
 import ru.levry.contacts.data.ContactsStore;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -21,8 +19,18 @@ import static java.util.Objects.nonNull;
  */
 public class ListContactsStore implements ContactsStore {
 
-    private final AtomicLong counter = new AtomicLong();
+    private final AtomicLong counter;
     private final Map<Long, Contact> contacts;
+
+    public static ListContactsStore contactsList(List<Contact> list) {
+        if(list.isEmpty()) {
+            return new ListContactsStore();
+        }
+
+        Map<Long, Contact> contacts = list.stream().collect(Collectors.toMap(Contact::getId, Function.identity()));
+        long valueCounter = Collections.max(contacts.keySet());
+        return new ListContactsStore(contacts, valueCounter);
+    }
 
     public ListContactsStore() {
         this(new HashMap<>());
@@ -30,6 +38,12 @@ public class ListContactsStore implements ContactsStore {
 
     public ListContactsStore(Map<Long, Contact> contacts) {
         this.contacts = contacts;
+        this.counter = new AtomicLong();
+    }
+
+    public ListContactsStore(Map<Long, Contact> contacts, long valueCounter) {
+        this.contacts = contacts;
+        this.counter = new AtomicLong(valueCounter);
     }
 
     @Override
@@ -76,5 +90,13 @@ public class ListContactsStore implements ContactsStore {
             String value = func.apply(c);
             return nonNull(value) && value.toLowerCase().startsWith(prefix);
         };
+    }
+
+    public int size() {
+        return contacts.size();
+    }
+
+    public long currentCounter() {
+        return counter.get();
     }
 }

@@ -7,12 +7,15 @@ import org.springframework.context.annotation.Bean
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.jdbc.JdbcTestUtils
+import ru.levry.contacts.ContactsTestUtils
 import ru.levry.contacts.data.Contact
 import ru.levry.contacts.data.ContactsSearch
 import ru.levry.contacts.data.ContactsStore
 import spock.lang.Specification
 
 import javax.sql.DataSource
+
+import static ru.levry.contacts.ContactsTestUtils.testContact
 
 /**
  * @author levry
@@ -158,14 +161,6 @@ class JdbcContactsStoreSpec extends Specification {
         then:
         contacts*.id == [3L]
         testContact(STALONE, contacts.find { it.id == 3L })
-    }
-
-    private static void testContact(Contact expected, Contact actual) {
-        assert actual.lastName == expected.lastName
-        assert actual.firstName == expected.firstName
-        assert actual.middleName == expected.middleName
-        assert actual.comment == expected.comment
-        assert actual.phones as Set == expected.phones as Set
     }
 
     @TestConfiguration

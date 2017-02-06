@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "lastName": "Norris",
+    "firstName": "Chuck",
+    "comment": "this is chuck",
+    "phones": ["12345678", "87654321", "telephone"]
+  },
+  {
+    "id": 2,
+    "lastName": "Stalone",
+    "firstName": "Silvester",
+    "middleName": "S",
+    "phones": []
+  },
+  {
+    "id": 3,
+    "lastName": "Schwarzenegger",
+    "firstName": "Arnold",
+    "middleName": "S",
+    "comment": "terminator"
+  },
+  {
+    "id": 10,
+    "lastName": "Van Damme",
+    "firstName": "Jean-Clode",
+    "comment": "kickboxer",
+    "phones": ["phone1"]
+  }
+]
