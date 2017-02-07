@@ -1,5 +1,6 @@
 package ru.levry.contacts.web;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.levry.contacts.data.Contact;
 import ru.levry.contacts.data.ContactsSearch;
@@ -36,6 +37,12 @@ public class ContactsController {
     public Contact edit(@PathVariable Long id, @RequestBody Contact contact) {
         contactsStore.update(id, contact);
         return contact;
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public void remove(@PathVariable Long id) {
+        contactsStore.remove(id);
     }
 
     @RequestMapping(method = RequestMethod.GET)

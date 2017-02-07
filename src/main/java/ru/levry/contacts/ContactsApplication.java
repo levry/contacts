@@ -2,25 +2,19 @@ package ru.levry.contacts;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import ru.levry.contacts.data.ContactsStore;
-import ru.levry.contacts.store.ListContactsStore;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.context.annotation.Import;
+import ru.levry.contacts.config.ContactsConfiguration;
 
 /**
  * @author levry
  */
-// TODO конфигурирование источника контактов db, json, xml
-@SpringBootApplication
+@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
+@Import(ContactsConfiguration.class)
 public class ContactsApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ContactsApplication.class, args);
 	}
-
-	@Bean
-	public ContactsStore contactsStore() {
-		return new ListContactsStore();
-	}
-
 
 }

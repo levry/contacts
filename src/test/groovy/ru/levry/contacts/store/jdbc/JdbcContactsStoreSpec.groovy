@@ -6,8 +6,8 @@ import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.TestPropertySource
 import org.springframework.test.jdbc.JdbcTestUtils
-import ru.levry.contacts.ContactsTestUtils
 import ru.levry.contacts.data.Contact
 import ru.levry.contacts.data.ContactsSearch
 import ru.levry.contacts.data.ContactsStore
@@ -21,6 +21,7 @@ import static ru.levry.contacts.ContactsTestUtils.testContact
  * @author levry
  */
 @JdbcTest
+@TestPropertySource(properties = "contacts.store=db")
 @ContextConfiguration
 class JdbcContactsStoreSpec extends Specification {
 
