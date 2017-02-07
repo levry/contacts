@@ -60,7 +60,8 @@ class JdbcContactsStoreSpec extends Specification {
         def contact = contactsStore.get(STALONE.id)
 
         then:
-        testContact(STALONE, contact)
+        contact.isPresent()
+        testContact(STALONE, contact.get())
     }
 
     def "get contact with one phone"() {
@@ -68,7 +69,8 @@ class JdbcContactsStoreSpec extends Specification {
         def contact = contactsStore.get(STATHAM.id)
 
         then:
-        testContact(STATHAM, contact)
+        contact.isPresent()
+        testContact(STATHAM, contact.get())
     }
 
     def "get contact with more one phones"() {
@@ -76,7 +78,8 @@ class JdbcContactsStoreSpec extends Specification {
         def contact = contactsStore.get(CHUCK.id)
 
         then:
-        testContact(CHUCK, contact)
+        contact.isPresent()
+        testContact(CHUCK, contact.get())
     }
 
     def "add contact"() {
@@ -96,7 +99,7 @@ class JdbcContactsStoreSpec extends Specification {
         contact.id != null
 
         when:
-        def created = contactsStore.get(contact.id)
+        def created = contactsStore.get(contact.id).get()
 
         then:
         created.firstName == contact.firstName
@@ -117,7 +120,7 @@ class JdbcContactsStoreSpec extends Specification {
         ))
 
         then:
-        def updated = contactsStore.get(1L)
+        def updated = contactsStore.get(1L).get()
         updated.lastName == 'Van Damme updated'
         updated.firstName == 'Jean-Clode updated'
         updated.middleName == 'updated'
@@ -132,6 +135,35 @@ class JdbcContactsStoreSpec extends Specification {
         then:
         JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "Contacts", "id = 4") == 0
         JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "Phones", "contact_ = 4") == 0
+    }
+
+    def "remove phone of contact"() {
+        when:
+        contactsStore.removePhone(CHUCK.id, '3332225')
+
+        then:
+        readContactPhones(CHUCK.id) == ['2223334'] as Set
+    }
+
+    def "add phone to contact"() {
+        when:
+        contactsStore.addPhone(CHUCK.id, 'new phone')
+
+        then:
+        readContactPhones(CHUCK.id) == ['2223334', '3332225', 'new phone'] as Set
+    }
+
+    def "should not throws on duplicate phone"() {
+        when:
+        contactsStore.addPhone(CHUCK.id, '2223334')
+
+        then:
+        noExceptionThrown()
+        readContactPhones(CHUCK.id) == ['2223334', '3332225'] as Set
+    }
+
+    private Set<String> readContactPhones(Long id) {
+        jdbcTemplate.queryForList('SELECT phone FROM Phones WHERE contact_ = ?', String, id) as Set
     }
 
     def "search contacts by lastName"() {

@@ -46,4 +46,26 @@ class ContactSpec extends Specification {
         then:
         contact.phones as Set == ['phone1', 'phone2'] as Set
     }
+
+    def "remove phone if phones is null"() {
+        given:
+        def contact = new Contact()
+
+        when:
+        contact.removePhone('phone')
+
+        then:
+        noExceptionThrown()
+    }
+
+    def "remove phone"() {
+        given:
+        def contact = new Contact(phones: ['123', 'removed'] as Set)
+
+        when:
+        contact.removePhone('removed')
+
+        then:
+        contact.phones == ['123'] as Set
+    }
 }

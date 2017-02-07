@@ -54,8 +54,8 @@ public class ListContactsStore implements ContactsStore {
     }
 
     @Override
-    public Contact get(long id) {
-        return contacts.get(id);
+    public Optional<Contact> get(long id) {
+        return Optional.ofNullable(contacts.get(id));
     }
 
     @Override
@@ -66,6 +66,16 @@ public class ListContactsStore implements ContactsStore {
     @Override
     public void remove(long id) {
         contacts.remove(id);
+    }
+
+    @Override
+    public void addPhone(long id, String phone) {
+        get(id).ifPresent(contact -> contact.addPhone(phone));
+    }
+
+    @Override
+    public void removePhone(long id, String phone) {
+        get(id).ifPresent(contact -> contact.removePhone(phone));
     }
 
     @Override

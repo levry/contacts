@@ -54,7 +54,8 @@ class ListContactsStoreSpec extends Specification {
         )
 
         when:
-        def contact = contactsStore.get(23L)
+        def opt = contactsStore.get(23L)
+        def contact = opt.get()
 
         then:
         contact != null
@@ -85,7 +86,7 @@ class ListContactsStoreSpec extends Specification {
         ))
 
         then:
-        def contract = contactsStore.get(2L)
+        def contract = contactsStore.get(2L).get()
         contract.lastName == 'lastName update'
         contract.firstName == 'firstName update'
         contract.middleName == 'middleName update'
@@ -106,7 +107,7 @@ class ListContactsStoreSpec extends Specification {
         contactsStore.remove(4L)
 
         then:
-        contactsStore.get(4L) == null
+        !contactsStore.get(4L).isPresent()
     }
 
     def "search contacts by lastName"() {
@@ -161,4 +162,51 @@ class ListContactsStoreSpec extends Specification {
         contacts.size() == 2
         contacts.currentCounter() == 14
     }
+
+    def "remove phone"() {
+        given:
+        def contact = new Contact(id: 12L, phones: ['112233', 'to remove'])
+        def contacts = ListContactsStore.contactsList([contact])
+
+        when:
+        contacts.removePhone(12L, 'to remove')
+
+        then:
+        contact.phones == ['112233'] as Set
+    }
+
+    def "should not throws if remove phone for unknown contact"() {
+        given:
+        def contacts = ListContactsStore.contactsList([])
+
+        when:
+        contacts.removePhone(22L, 'remove')
+
+        then:
+        noExceptionThrown()
+    }
+
+    def "add phone to contact"() {
+        given:
+        def contact = new Contact(id: 1L, phones: ['223344'])
+        def contacts = ListContactsStore.contactsList([contact])
+
+        when:
+        contacts.addPhone(1L, 'new phone')
+
+        then:
+        contact.phones == ['223344', 'new phone'] as Set
+    }
+
+    def "should not throws if add phone to unknown contact"() {
+        given:
+        def contacts = ListContactsStore.contactsList([])
+
+        when:
+        contacts.addPhone(505L, 'phone')
+
+        then:
+        noExceptionThrown()
+    }
+
 }

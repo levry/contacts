@@ -2,6 +2,7 @@ package ru.levry.contacts.data;
 
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -87,4 +88,9 @@ public class Contact {
         }
         phones.add(phone);
     }
+
+    public void removePhone(String phone) {
+        Optional.ofNullable(phones).ifPresent(phones -> phones.remove(phone));
+    }
+
 }

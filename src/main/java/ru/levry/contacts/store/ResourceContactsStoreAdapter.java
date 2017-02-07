@@ -31,7 +31,7 @@ public class ResourceContactsStoreAdapter implements ContactsStore {
     }
 
     @Override
-    public Contact get(long id) {
+    public Optional<Contact> get(long id) {
         return contactsStore.get(id);
     }
 
@@ -43,6 +43,16 @@ public class ResourceContactsStoreAdapter implements ContactsStore {
     @Override
     public void remove(long id) {
         contactsStore.remove(id);
+    }
+
+    @Override
+    public void addPhone(long id, String phone) {
+        contactsStore.addPhone(id, phone);
+    }
+
+    @Override
+    public void removePhone(long id, String phone) {
+        contactsStore.removePhone(id, phone);
     }
 
     @Override

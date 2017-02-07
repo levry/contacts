@@ -46,10 +46,11 @@ class ResourceContactsStoreAdapterSpec extends Specification {
         ResourceContactsStoreAdapter adapter = new ResourceContactsStoreAdapter(reader)
 
         when:
-        def founded = adapter.get(contact.id)
+        def found = adapter.get(contact.id)
 
         then:
-        founded == contact
+        found.isPresent()
+        found.get() == contact
     }
 
     def "add contact"() {
@@ -90,7 +91,7 @@ class ResourceContactsStoreAdapterSpec extends Specification {
                 comment: 'comment updated',
                 phones: ['221100']
         ))
-        def updated = adapter.get(contact.id)
+        def updated = adapter.get(contact.id).get()
 
         then:
         updated.lastName == 'lastName updated'
@@ -112,6 +113,48 @@ class ResourceContactsStoreAdapterSpec extends Specification {
         adapter.remove(2L)
 
         then:
-        adapter.get(2L) == null
+        !adapter.get(2L).isPresent()
     }
+
+    def "remove phone of contact"() {
+        given:
+        def contact = new Contact(
+                id: 10L,
+                lastName: 'lastName',
+                firstName: 'firstName',
+                middleName: 'middleName',
+                comment: 'comment',
+                phones: ['001122', 'removed']
+        )
+        def reader = Stub(ContactsReader) {
+            read() >> [contact]
+        }
+        def adapter = new ResourceContactsStoreAdapter(reader)
+
+        when:
+        adapter.removePhone(10L, 'removed')
+
+        then:
+        contact.phones == ['001122'] as Set
+    }
+
+    def "add phone to contact"() {
+        given:
+        def contact = new Contact(
+                id: 10L,
+                lastName: 'lastName',
+                phones: ['001122']
+        )
+        def reader = Stub(ContactsReader) {
+            read() >> [contact]
+        }
+        def adapter = new ResourceContactsStoreAdapter(reader)
+
+        when:
+        adapter.addPhone(10L, 'new phone')
+
+        then:
+        contact.phones == ['001122', 'new phone'] as Set
+    }
+
 }

@@ -1,5 +1,6 @@
 package ru.levry.contacts.store.jdbc;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -62,14 +63,14 @@ public class JdbcContactsStore extends JdbcDaoSupport implements ContactsStore {
     }
 
     @Override
-    public Contact get(long id) {
+    public Optional<Contact> get(long id) {
         List<Contact> contacts = getJdbcTemplate().query(
             "SELECT c.id AS id, c.lastName AS lastName, c.firstName AS firstName, c.middleName AS middleName, " +
                 "c.comment AS comment, p.phone AS phone " +
             "FROM Contacts AS c " +
                 "LEFT JOIN Phones p ON p.contact_ = c.id " +
             "WHERE c.id = ?", getListResultSetExtractor(), id);
-        return DataAccessUtils.requiredSingleResult(contacts);
+        return Optional.ofNullable(DataAccessUtils.singleResult(contacts));
     }
 
     @Override
@@ -86,6 +87,20 @@ public class JdbcContactsStore extends JdbcDaoSupport implements ContactsStore {
     @Override
     public void remove(long id) {
         getJdbcTemplate().update("DELETE FROM Contacts WHERE id = ?", id);
+    }
+
+    @Override
+    public void addPhone(long id, String phone) {
+        try {
+            getJdbcTemplate().update("INSERT INTO Phones (contact_, phone) VALUES (?, ?)", id, phone);
+        } catch (DuplicateKeyException e) {
+            logger.warn("Duplicate phone '" + phone + "' for contact " + id + ": " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void removePhone(long id, String phone) {
+        getJdbcTemplate().update("DELETE FROM Phones WHERE contact_ = ? AND phone = ?", id, phone);
     }
 
     @Override
