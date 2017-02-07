@@ -2,15 +2,15 @@ package ru.levry.contacts.store.reader;
 
 import ru.levry.contacts.data.Contact;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author levry
  */
 public interface ContactsReader {
 
-    List<Contact> read();
+    Collection<Contact> read();
 
-    void write(List<Contact> contacts);
+    void write(Collection<Contact> contacts);
 
 }

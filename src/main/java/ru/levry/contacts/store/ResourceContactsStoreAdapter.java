@@ -21,7 +21,7 @@ public class ResourceContactsStoreAdapter implements ContactsStore {
     }
 
     private ListContactsStore readContacts() {
-        List<Contact> list = contactsReader.read();
+        Collection<Contact> list = contactsReader.read();
         return ListContactsStore.contactsList(list);
     }
 
@@ -50,4 +50,7 @@ public class ResourceContactsStoreAdapter implements ContactsStore {
         return contactsStore.findBy(search);
     }
 
+    public void writeContacts() {
+        contactsReader.write(contactsStore.findAll());
+    }
 }

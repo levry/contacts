@@ -1,9 +1,14 @@
 package ru.levry.contacts.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotNull;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * @author levry
@@ -21,7 +26,7 @@ public class ContactsProperties {
 
     @NotNull
     private ContactsStoreType store;
-    private String filename;
+    private Resource filename;
 
     public ContactsStoreType getStore() {
         return store;
@@ -31,11 +36,16 @@ public class ContactsProperties {
         this.store = store;
     }
 
-    public String getFilename() {
+    public Resource getFilename() {
         return filename;
     }
 
-    public void setFilename(String filename) {
+    public void setFilename(Resource filename) {
         this.filename = filename;
     }
+
+    public File getFile() throws IOException {
+        return filename.getFile();
+    }
+
 }

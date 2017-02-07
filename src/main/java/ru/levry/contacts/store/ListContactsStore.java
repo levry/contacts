@@ -22,7 +22,7 @@ public class ListContactsStore implements ContactsStore {
     private final AtomicLong counter;
     private final Map<Long, Contact> contacts;
 
-    public static ListContactsStore contactsList(List<Contact> list) {
+    public static ListContactsStore contactsList(Collection<Contact> list) {
         if(list.isEmpty()) {
             return new ListContactsStore();
         }
@@ -70,7 +70,7 @@ public class ListContactsStore implements ContactsStore {
 
     @Override
     public Collection<Contact> findBy(ContactsSearch search) {
-        Collection<Contact> values = this.contacts.values();
+        Collection<Contact> values = findAll();
         if(search.isEmpty()) {
             return values;
         }
@@ -83,6 +83,10 @@ public class ListContactsStore implements ContactsStore {
             stream = stream.filter(startsWith(Contact::getLastName, search.getLastName()));
         }
         return stream.collect(Collectors.toList());
+    }
+
+    public Collection<Contact> findAll() {
+        return this.contacts.values();
     }
 
     private Predicate<Contact> startsWith(Function<Contact, String> func, String prefix) {
