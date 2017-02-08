@@ -47,6 +47,11 @@ public class ListContactsStore implements ContactsStore {
     }
 
     @Override
+    public boolean exists(long id) {
+        return contacts.containsKey(id);
+    }
+
+    @Override
     public void add(Contact contact) {
         long id = counter.incrementAndGet();
         contact.setId(id);
@@ -66,6 +71,11 @@ public class ListContactsStore implements ContactsStore {
     @Override
     public void remove(long id) {
         contacts.remove(id);
+    }
+
+    @Override
+    public void putPhones(long id, Set<String> phones) {
+        get(id).ifPresent(contact -> contact.setPhones(phones));
     }
 
     @Override

@@ -9,6 +9,32 @@ import spock.lang.Specification
  */
 class ListContactsStoreSpec extends Specification {
 
+    def "should be return true if exists contact"() {
+        given:
+        def contacts = ListContactsStore.contactsList([
+                new Contact(id: 12L, lastName: 'Norris')
+        ])
+
+        when:
+        def exists = contacts.exists(12L)
+
+        then:
+        exists
+    }
+
+    def "should be return false if not exists contact"() {
+        given:
+        def contacts = ListContactsStore.contactsList([
+                new Contact(id: 12L, lastName: 'Norris')
+        ])
+
+        when:
+        def exists = contacts.exists(13L)
+
+        then:
+        !exists
+    }
+
     def "should be set id on add contact"() {
         given:
         def contactsStore = new ListContactsStore()
@@ -161,6 +187,18 @@ class ListContactsStoreSpec extends Specification {
         then:
         contacts.size() == 2
         contacts.currentCounter() == 14
+    }
+
+    def "should be replace all phones on put phones to contact"() {
+        given:
+        def contact = new Contact(id: 12L, phones: ['111', '222', '333',])
+        def contacts = ListContactsStore.contactsList([contact])
+
+        when:
+        contacts.putPhones(12L, ['111', '444', '555', '777'] as Set)
+
+        then:
+        contact.phones == ['111', '444', '555', '777'] as Set
     }
 
     def "remove phone"() {

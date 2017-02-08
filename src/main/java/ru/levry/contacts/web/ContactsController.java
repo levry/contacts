@@ -7,15 +7,11 @@ import ru.levry.contacts.data.Contact;
 import ru.levry.contacts.data.ContactsSearch;
 import ru.levry.contacts.data.ContactsStore;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author levry
  */
-// TODO методы для работы с телефонами отдельного контакта
 @RestController
 @RequestMapping("/contacts")
 public class ContactsController {
@@ -60,13 +56,27 @@ public class ContactsController {
 
     @RequestMapping(value = "/{id}/phones", method = RequestMethod.POST)
     public void addPhone(@PathVariable Long id, @RequestParam String phone) {
+        checkExistsContact(id);
         contactsStore.addPhone(id, phone);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @RequestMapping(value = "/{id}/phones", method = RequestMethod.DELETE)
-    public void removePhone(@PathVariable Long id, @RequestParam String phone) {
+    @RequestMapping(value = "/{id}/phones/{phone}", method = RequestMethod.DELETE)
+    public void removePhone(@PathVariable Long id, @PathVariable String phone) {
+        checkExistsContact(id);
         contactsStore.removePhone(id, phone);
+    }
+
+    @RequestMapping(value = "/{id}/phones", method = RequestMethod.PUT)
+    public void putPhones(@PathVariable Long id, @RequestParam Set<String> phones) {
+        checkExistsContact(id);
+        contactsStore.putPhones(id, phones);
+    }
+
+    private void checkExistsContact(Long id) {
+        if(!contactsStore.exists(id)) {
+            throw new NotFoundContactException(id);
+        }
     }
 
     @RequestMapping(method = RequestMethod.GET)

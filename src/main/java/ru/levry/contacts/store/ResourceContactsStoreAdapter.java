@@ -26,6 +26,11 @@ public class ResourceContactsStoreAdapter implements ContactsStore {
     }
 
     @Override
+    public boolean exists(long id) {
+        return contactsStore.exists(id);
+    }
+
+    @Override
     public void add(Contact contact) {
         contactsStore.add(contact);
     }
@@ -43,6 +48,11 @@ public class ResourceContactsStoreAdapter implements ContactsStore {
     @Override
     public void remove(long id) {
         contactsStore.remove(id);
+    }
+
+    @Override
+    public void putPhones(long id, Set<String> phones) {
+        contactsStore.putPhones(id, phones);
     }
 
     @Override

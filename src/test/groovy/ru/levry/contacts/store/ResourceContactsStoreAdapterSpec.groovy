@@ -12,7 +12,6 @@ class ResourceContactsStoreAdapterSpec extends Specification {
 
     def "find contacts"() {
         given:
-
         def contacts = [
                 new Contact(id: 2, lastName: 'Norris'),
                 new Contact(id: 15, lastName: 'Statham'),
@@ -31,9 +30,26 @@ class ResourceContactsStoreAdapterSpec extends Specification {
         foundContacts as Set == contacts as Set
     }
 
+    def "check exists contact"() {
+        def contacts = [
+                new Contact(id: 2L, lastName: 'Norris'),
+                new Contact(id: 15L, lastName: 'Statham'),
+                new Contact(id: 90L, lastName: 'Chan')
+        ]
+        def reader = Stub(ContactsReader) {
+            read() >> contacts
+        }
+        ResourceContactsStoreAdapter adapter = new ResourceContactsStoreAdapter(reader)
+
+        expect:
+        adapter.exists(2L)
+        adapter.exists(15L)
+        adapter.exists(90L)
+        !adapter.exists(1L)
+    }
+
     def "get contact"() {
         given:
-
         def contact = new Contact(
                 id: 11,
                 lastName: 'Chan',
@@ -157,4 +173,22 @@ class ResourceContactsStoreAdapterSpec extends Specification {
         contact.phones == ['001122', 'new phone'] as Set
     }
 
+    def "put phones to contact"() {
+        given:
+        def contact = new Contact(
+                id: 10L,
+                lastName: 'lastName',
+                phones: ['001122']
+        )
+        def reader = Stub(ContactsReader) {
+            read() >> [contact]
+        }
+        def adapter = new ResourceContactsStoreAdapter(reader)
+
+        when:
+        adapter.putPhones(10L, ['22', '33'] as Set)
+
+        then:
+        contact.phones == ['22','33'] as Set
+    }
 }

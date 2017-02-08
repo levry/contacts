@@ -38,6 +38,12 @@ public class JdbcContactsStore extends JdbcDaoSupport implements ContactsStore {
     }
 
     @Override
+    public boolean exists(long id) {
+        Integer count = getJdbcTemplate().queryForObject("SELECT COUNT(*) FROM Contacts WHERE id = ?", Integer.class, id);
+        return count != null && count != 0;
+    }
+
+    @Override
     public void add(Contact contact) {
         Number id = insertContact(contact);
         contact.setId(id.longValue());
@@ -51,15 +57,6 @@ public class JdbcContactsStore extends JdbcDaoSupport implements ContactsStore {
                 ps.setString(3, contact.getMiddleName());
                 ps.setString(4, contact.getComment());
             });
-    }
-
-    private void insertPhones(Number id, Set<String> phones) {
-        if(!CollectionUtils.isEmpty(phones)) {
-            List<Object[]> args = phones.stream()
-                    .map(p -> new Object[] {id, p})
-                    .collect(Collectors.toList());
-            getJdbcTemplate().batchUpdate("INSERT INTO Phones (contact_, phone) VALUES (?, ?)", args);
-        }
     }
 
     @Override
@@ -79,14 +76,32 @@ public class JdbcContactsStore extends JdbcDaoSupport implements ContactsStore {
                 contact.getLastName(), contact.getFirstName(), contact.getMiddleName(), contact.getComment(), id);
 
         if (!CollectionUtils.isEmpty(contact.getPhones())) {
-            getJdbcTemplate().update("DELETE FROM Phones WHERE contact_ = ?", id);
-            insertPhones(id, contact.getPhones());
+            putPhones(id, contact.getPhones());
         }
     }
 
     @Override
     public void remove(long id) {
         getJdbcTemplate().update("DELETE FROM Contacts WHERE id = ?", id);
+    }
+
+    @Override
+    public void putPhones(long id, Set<String> phones) {
+        deletePhones(id);
+        insertPhones(id, phones);
+    }
+
+    private void deletePhones(long id) {
+        getJdbcTemplate().update("DELETE FROM Phones WHERE contact_ = ?", id);
+    }
+
+    private void insertPhones(Number id, Set<String> phones) {
+        if(!CollectionUtils.isEmpty(phones)) {
+            List<Object[]> args = phones.stream()
+                    .map(p -> new Object[] {id, p})
+                    .collect(Collectors.toList());
+            getJdbcTemplate().batchUpdate("INSERT INTO Phones (contact_, phone) VALUES (?, ?)", args);
+        }
     }
 
     @Override

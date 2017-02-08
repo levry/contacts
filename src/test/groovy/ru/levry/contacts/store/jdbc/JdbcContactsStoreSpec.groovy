@@ -55,6 +55,22 @@ class JdbcContactsStoreSpec extends Specification {
     @Autowired
     ContactsStore contactsStore
 
+    def "exists contact"() {
+        when:
+        def exists = contactsStore.exists(CHUCK.id)
+
+        then:
+        exists
+    }
+
+    def "should be return false if not exists contact"() {
+        when:
+        def exists = contactsStore.exists(-1L)
+
+        then:
+        !exists
+    }
+
     def "get contact without phones"() {
         when:
         def contact = contactsStore.get(STALONE.id)
@@ -151,6 +167,14 @@ class JdbcContactsStoreSpec extends Specification {
 
         then:
         readContactPhones(CHUCK.id) == ['2223334', '3332225', 'new phone'] as Set
+    }
+
+    def "put phones to contact"() {
+        when:
+        contactsStore.putPhones(CHUCK.id, ['111', '333', 'chuckphone'] as Set)
+
+        then:
+        readContactPhones(CHUCK.id) == ['111', '333', 'chuckphone'] as Set
     }
 
     def "should not throws on duplicate phone"() {
