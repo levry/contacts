@@ -1,0 +1,18 @@
+# подключение xml файла
+contacts:
+  store: xml
+  filename: file:/home/levry/projects/contacts/contacts.xml
+
+# подключение json файла
+#contacts:
+#  store: json
+#  filename: file:/home/levry/projects/contacts/contacts.json
+
+# подключение базы данных
+#contacts:
+#  store: db
+#spring:
+#  datasource:
+#    url: jdbc:h2:mem:testdb;IGNORECASE=TRUE
+#    driver-class-name: org.h2.Driver
+#    platform: h2

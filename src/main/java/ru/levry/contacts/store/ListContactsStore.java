@@ -65,6 +65,7 @@ public class ListContactsStore implements ContactsStore {
 
     @Override
     public void update(long id, Contact contact) {
+        contact.setId(id);
         contacts.put(id, contact);
     }
 

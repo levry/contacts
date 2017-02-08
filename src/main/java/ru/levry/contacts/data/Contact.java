@@ -10,18 +10,18 @@ import java.util.Set;
  */
 public class Contact {
 
-    private Long id;
+    private long id;
     private String lastName;
     private String firstName;
     private String middleName;
     private String comment;
-    private Set<String> phones;
+    private Set<String> phones = new HashSet<>();
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -83,9 +83,6 @@ public class Contact {
     }
 
     public void addPhone(String phone) {
-        if(phones == null) {
-            phones = new HashSet<>();
-        }
         phones.add(phone);
     }
 

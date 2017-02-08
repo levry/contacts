@@ -55,7 +55,7 @@ class ContactRowMapperSpec extends Specification {
         contact.firstName == 'firstName'
         contact.middleName == 'middleName'
         contact.comment == 'comment'
-        contact.phones == null
+        contact.phones.empty
     }
 
     def "map row with null phone"() {
@@ -79,6 +79,6 @@ class ContactRowMapperSpec extends Specification {
         contact.firstName == 'firstName'
         contact.middleName == 'middleName'
         contact.comment == 'comment'
-        contact.phones == null
+        contact.phones.empty
     }
 }

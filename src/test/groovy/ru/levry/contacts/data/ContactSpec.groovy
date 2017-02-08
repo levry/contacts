@@ -14,17 +14,6 @@ class ContactSpec extends Specification {
         new Contact(id: 3L) != new Object()
     }
 
-    def "add phone if phones is null"() {
-        given:
-        def contact = new Contact(phones: null)
-
-        when:
-        contact.addPhone('phone')
-
-        then:
-        contact.phones as Set == ['phone'] as Set
-    }
-
     def "add phone if phones is not null"() {
         given:
         def contact = new Contact(phones: new HashSet<String>())

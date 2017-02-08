@@ -112,12 +112,13 @@ class ListContactsStoreSpec extends Specification {
         ))
 
         then:
-        def contract = contactsStore.get(2L).get()
-        contract.lastName == 'lastName update'
-        contract.firstName == 'firstName update'
-        contract.middleName == 'middleName update'
-        contract.comment == 'comment update'
-        contract.phones as Set == ['phone2', 'phone3'] as Set
+        def contact = contactsStore.get(2L).get()
+        contact.id == 2L
+        contact.lastName == 'lastName update'
+        contact.firstName == 'firstName update'
+        contact.middleName == 'middleName update'
+        contact.comment == 'comment update'
+        contact.phones as Set == ['phone2', 'phone3'] as Set
     }
 
     def "remove contact by id"() {
