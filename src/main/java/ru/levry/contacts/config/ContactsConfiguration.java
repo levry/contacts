@@ -1,5 +1,6 @@
 package ru.levry.contacts.config;
 
+import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -25,21 +26,21 @@ public class ContactsConfiguration {
     @ConditionalOnProperty(name = "contacts.store", havingValue = "mem")
     @Bean
     public ContactsStore memoryContactStore() {
-        return new ListContactsStore();
+        return new ListContactsStore(new ConcurrentHashMap<>());
     }
 
     @ConditionalOnProperty(name = "contacts.store", havingValue = "json")
     @Bean(destroyMethod = "writeContacts")
     public ResourceContactsStoreAdapter jsonContactsStore(ContactsProperties props) throws Exception {
         ContactsReader reader = JacksonContactsReader.jsonReader(props.getFile());
-        return new ResourceContactsStoreAdapter(reader);
+        return new ResourceContactsStoreAdapter(reader, ListContactsStore::concurrentList);
     }
 
     @ConditionalOnProperty(name = "contacts.store", havingValue = "xml")
     @Bean(destroyMethod = "writeContacts")
     public ResourceContactsStoreAdapter xmlContactsStore(ContactsProperties props) throws Exception {
         ContactsReader reader = JacksonContactsReader.xmlReader(props.getFile());
-        return new ResourceContactsStoreAdapter(reader);
+        return new ResourceContactsStoreAdapter(reader, ListContactsStore::concurrentList);
     }
 
     @ConditionalOnProperty(name = "contacts.store", havingValue = "db")

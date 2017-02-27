@@ -1,5 +1,6 @@
 package ru.levry.contacts.store;
 
+import java.util.function.Function;
 import ru.levry.contacts.data.Contact;
 import ru.levry.contacts.data.ContactsSearch;
 import ru.levry.contacts.data.ContactsStore;
@@ -16,13 +17,18 @@ public class ResourceContactsStoreAdapter implements ContactsStore {
     private final ListContactsStore contactsStore;
 
     public ResourceContactsStoreAdapter(ContactsReader reader) {
-        contactsReader = reader;
-        contactsStore = readContacts();
+        this(reader, ListContactsStore::contactsList);
     }
 
-    private ListContactsStore readContacts() {
+    public ResourceContactsStoreAdapter(ContactsReader reader,
+            Function<Collection<Contact>, ListContactsStore> toContactsStore) {
+        contactsReader = reader;
+        contactsStore = readContacts(toContactsStore);
+    }
+
+    private ListContactsStore readContacts(Function<Collection<Contact>, ListContactsStore> toContactsStore) {
         Collection<Contact> list = contactsReader.read();
-        return ListContactsStore.contactsList(list);
+        return toContactsStore.apply(list);
     }
 
     @Override

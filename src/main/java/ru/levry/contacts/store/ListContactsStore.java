@@ -1,5 +1,7 @@
 package ru.levry.contacts.store;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collector;
 import org.springframework.util.StringUtils;
 import ru.levry.contacts.data.Contact;
 import ru.levry.contacts.data.ContactsSearch;
@@ -13,6 +15,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.toConcurrentMap;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * @author levry
@@ -27,7 +31,20 @@ public class ListContactsStore implements ContactsStore {
             return new ListContactsStore();
         }
 
-        Map<Long, Contact> contacts = list.stream().collect(Collectors.toMap(Contact::getId, Function.identity()));
+        return createContactsList(list, toMap(Contact::getId, Function.identity()));
+    }
+
+    public static ListContactsStore concurrentList(Collection<Contact> list) {
+        if(list.isEmpty()) {
+            return new ListContactsStore(new ConcurrentHashMap<>());
+        }
+
+        return createContactsList(list, toConcurrentMap(Contact::getId, Function.identity()));
+    }
+
+    private static ListContactsStore createContactsList(Collection<Contact> list,
+            Collector<Contact, ?, ? extends Map<Long, Contact>> mapCollector) {
+        Map<Long, Contact> contacts = list.stream().collect(mapCollector);
         long valueCounter = Collections.max(contacts.keySet());
         return new ListContactsStore(contacts, valueCounter);
     }
